@@ -30,7 +30,8 @@
       :especie="paciente.especie"
       :raza="paciente.raza"
       :nac="paciente.nac"
-      :diag="paciente.diagnostico"
+      :diag="paciente.hClinica"
+      @nueva-consulta="registrarConsulta"
       @eliminar-paciente="eliminarRegistro"
       @editar-paciente="editarRegistro"
       ></pacientes-registrados>
@@ -54,14 +55,14 @@ export default {
             especie: 'Perro',
             raza: 'Caniche',
             nac: '15/08/19',
-            diagnostico: 'Dermatitis',
+            hClinica: 'Dermatitis',
             },{
             id: 'emita',
             nombre: 'Emma',
             especie: 'Perro',
             raza: 'Caniche',
             nac: '15/08/19',
-            diagnostico: 'ninguno',
+            hClinica: 'ninguno',
             }
           ]   
         }
@@ -92,7 +93,7 @@ export default {
       if(confirm("Se eliminara el registro del paciente")){
       this.pacientes = this.pacientes.filter((paciente) => paciente.id !== pacienteId); }
     },
-    editarRegistro(Id,editarNombre,editarEspecie,editarRaza,editarEdad){
+      editarRegistro(Id,editarNombre,editarEspecie,editarRaza,editarEdad){
       const indice = this.pacientes.findIndex((paciente) => paciente.id === Id);
       const edicion = {
         nombre: editarNombre,
@@ -101,6 +102,10 @@ export default {
         nac: editarEdad,
       }
       this.pacientes.splice(indice,1,edicion);
+    },
+    registrarConsulta(Id,nuevaC){
+      const indice = this.pacientes.findIndex((paciente) => paciente.id === Id);
+      this.pacientes[indice].hClinica = nuevaC;
     }
   }
 };

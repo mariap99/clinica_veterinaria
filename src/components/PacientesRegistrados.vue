@@ -10,38 +10,41 @@
       </v-list-item>
       <v-card-text>
         <v-row > 
-          <ul><li>
-            <strong> Especie: </strong>
-                {{ especie }}  
-        </li>
-        <li>
-            <strong> Raza: </strong>
-                {{ raza }}
-        </li>
-        <li>
+          <ul>
+              <li>
+            <strong> Especie: </strong> 
+                  {{ especie }}  
+              </li><li>
+            <strong> Raza: </strong> 
+                  {{ raza }}
+              </li><li>
             <strong> Fecha de nacimiento: </strong>
-                {{ nac }}
-        </li>
-        <li>
-            <strong> Historia Clinica </strong>
+                  {{ nac }}
+              </li>
+<!-- historia clinica  -->
+        <v-list-item-content v-if="hClinica">
+          <v-list-item-title> Historia Clinica  </v-list-item-title>
+               <v-list-item>
                 {{ diag }}
-        </li>
-    </ul>
+               </v-list-item>
+        </v-list-item-content>
+          </ul>
         </v-row>
         <v-row justify="end">
-          <v-btn class="mx-2" fab dark small color="primary"  @click="nuevaConsulta">
+          <v-btn class="mx-2" fab dark small color="primary" @click="nuevaConsulta">
             <v-icon dark> mdi-plus </v-icon>
           </v-btn>
           <v-btn class="mx-2" fab dark small color="cyan" @click="abrirForm">
               <v-icon dark> mdi-pencil </v-icon> 
            </v-btn>
-           <v-btn class="mx-2" fab dark small color="teal">
+           <v-btn class="mx-2" fab dark small color="teal" @click="mostrarHistoria">
             <v-icon dark>  mdi-format-list-bulleted-square </v-icon>
            </v-btn>
             <v-btn class="mx-2" fab dark small color="error" @click="eliminarPaciente">
               x
           </v-btn>    
      </v-row>
+<!--  area de texto para registrar consultas  -->
      <v-card-text v-if="consulta">
         <v-textarea name="input-7-1" hint="Hint text" v-model="agregardiag"
         ></v-textarea>
@@ -50,6 +53,7 @@
             </v-btn>
      </v-card-text>
     </v-card-text>
+<!-- formulario para editar datos  -->
     <v-card-text v-if="formulario">
       <form @submit.prevent="editarDatos">
         <v-text-field v-model="editarNombre" label="Nombre"> </v-text-field>
@@ -78,7 +82,7 @@
       agregardiag: '',
       formulario: false,
       consulta: false,
-      diag: ''
+      hClinica: false
      };
         },
         props: {
@@ -87,6 +91,7 @@
             nombre: String,
             especie: String,
             nac: String,
+            diag: String
 
   },
   methods:{
@@ -97,7 +102,7 @@
     enviarDiag(){
         this.$emit('nueva-consulta',
                     this.id,
-                    this.diag)
+                    this.agregardiag)
     },
     editarDatos(){
       this.$emit('editar-paciente', 
@@ -110,10 +115,17 @@
     abrirForm(){
       this.formulario = !this.formulario
       this.consulta = false
+      this.hClinica = false
     },
     eliminarPaciente(){
       this.$emit('eliminar-paciente',
                   this.id )
+    },
+    mostrarHistoria(){
+      this.hClinica = true,
+      this.formulario = false,
+      this.consulta = false
+
     }
   }
 });
