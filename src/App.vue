@@ -18,8 +18,8 @@
     </v-row>
   </v-container> 
     <v-container fluid v-if="registrar">
-      <nuevo-paciente @añadir-paciente="nuevoPaciente"
-      ></nuevo-paciente>
+    <nuevo-paciente @añadir-paciente="nuevoPaciente"
+      ></nuevo-paciente> 
     </v-container>
     <v-container fluid v-if="registrados">
       <pacientes-registrados
@@ -29,8 +29,10 @@
       :nombre="paciente.nombre"
       :especie="paciente.especie"
       :raza="paciente.raza"
-      :edad="paciente.nac"
+      :nac="paciente.nac"
+      :diag="paciente.diagnostico"
       @eliminar-paciente="eliminarRegistro"
+      @editar-paciente="editarRegistro"
       ></pacientes-registrados>
     </v-container>
   </v-main>
@@ -73,21 +75,33 @@ export default {
         this.registrados = true,
         this.registrar = false
       },
-      nuevoPaciente(NvoNombre,NvaEspecie,NvaRaza,NvaEdad){
+      nuevoPaciente(NvoNombre,NvaEspecie,NvaRaza,NvaFecha){
         const nuevoPaciente = {
         id: new Date().toISOString(),
         nombre: NvoNombre,
         especie: NvaEspecie,
         raza: NvaRaza,
-        nac: NvaEdad,
+        nac: NvaFecha,
       };
       this.pacientes.push(nuevoPaciente);
       alert('PACIENTE REGISTRADO');
-      this.registrar = false
+      this.registrar = false 
+
       },
       eliminarRegistro(pacienteId){
-      this.pacientes = this.pacientes.filter((paciente) => paciente.id !== pacienteId); 
+      if(confirm("Se eliminara el registro del paciente")){
+      this.pacientes = this.pacientes.filter((paciente) => paciente.id !== pacienteId); }
     },
+    editarRegistro(Id,editarNombre,editarEspecie,editarRaza,editarEdad){
+      const indice = this.pacientes.findIndex((paciente) => paciente.id === Id);
+      const edicion = {
+        nombre: editarNombre,
+        especie:editarEspecie,
+        raza: editarRaza,
+        nac: editarEdad,
+      }
+      this.pacientes.splice(indice,1,edicion);
     }
+  }
 };
 </script>

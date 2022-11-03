@@ -20,39 +20,97 @@
         </li>
         <li>
             <strong> Fecha de nacimiento: </strong>
-                {{ edad }}
+                {{ nac }}
+        </li>
+        <li>
+            <strong> Historia Clinica </strong>
+                {{ diag }}
         </li>
     </ul>
         </v-row>
         <v-row justify="end">
-          <v-btn class="mx-2" fab dark small color="primary">
+          <v-btn class="mx-2" fab dark small color="primary"  @click="nuevaConsulta">
             <v-icon dark> mdi-plus </v-icon>
           </v-btn>
-          <v-btn class="mx-2" fab dark small color="cyan">
-            <v-icon dark> mdi-pencil </v-icon>
+          <v-btn class="mx-2" fab dark small color="cyan" @click="abrirForm">
+              <v-icon dark> mdi-pencil </v-icon> 
            </v-btn>
            <v-btn class="mx-2" fab dark small color="teal">
             <v-icon dark>  mdi-format-list-bulleted-square </v-icon>
            </v-btn>
-          <v-btn class="mx-2" fab dark small color="error" @click="eliminarPaciente">
-            <v-icon dark> mdi-cancel </v-icon>
-          </v-btn>
+            <v-btn class="mx-2" fab dark small color="error" @click="eliminarPaciente">
+              x
+          </v-btn>    
      </v-row>
+     <v-card-text v-if="consulta">
+        <v-textarea name="input-7-1" hint="Hint text" v-model="agregardiag"
+        ></v-textarea>
+          <v-btn color="success" class="mr-4" type="submit" @click="enviarDiag">
+              Guardar
+            </v-btn>
+     </v-card-text>
+    </v-card-text>
+    <v-card-text v-if="formulario">
+      <form @submit.prevent="editarDatos">
+        <v-text-field v-model="editarNombre" label="Nombre"> </v-text-field>
+          <v-text-field v-model="editarEspecie" label="Especie"> </v-text-field>
+          <v-text-field v-model="editarRaza" label="Raza"> </v-text-field>
+          <v-text-field v-model="editarFecha" label="Fecha de nacimiento"> </v-text-field>
+        <v-row justify="end">
+          <v-btn color="success" class="mr-4" type="submit">
+            Guardar
+          </v-btn>
+        </v-row>
+      </form>
     </v-card-text>
     </v-card>
   </v-container>
   </template>
 <script>
      export default({
-        emits: ['eliminar-paciente'],
+        emits: ['eliminar-paciente','editar-paciente'],
+        data() {
+     return {
+      editarNombre: '',
+      editarEspecie: '',
+      editarRaza: '',
+      editarFecha: '',
+      agregardiag: '',
+      formulario: false,
+      consulta: false,
+      diag: ''
+     };
+        },
         props: {
             id: String,
             raza: String,
             nombre: String,
             especie: String,
-            edad: String
+            nac: String,
+
   },
   methods:{
+    nuevaConsulta(){
+      this.consulta = !this.consulta
+      this.formulario = false
+    },
+    enviarDiag(){
+        this.$emit('nueva-consulta',
+                    this.id,
+                    this.diag)
+    },
+    editarDatos(){
+      this.$emit('editar-paciente', 
+                  this.id,
+                  this.editarNombre,
+                  this.editarEspecie,
+                  this.editarRaza,
+                  this.editarFecha)
+    },
+    abrirForm(){
+      this.formulario = !this.formulario
+      this.consulta = false
+    },
     eliminarPaciente(){
       this.$emit('eliminar-paciente',
                   this.id )
